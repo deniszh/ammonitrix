@@ -10,7 +10,8 @@ type Listen struct {
 }
 
 type Elastic struct {
-	Host      string
-	Port      string
-	IndexName string
+	Host          string
+	Port          string
+	IndexName     string
+	MetaDataIndex string
 }

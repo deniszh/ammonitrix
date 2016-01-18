@@ -2,41 +2,30 @@ package receiver
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
+	"net/http"
 
 	"github.com/eBayClassifiedsGroup/ammonitrix/config"
 )
 
-func (r *Receiver) validateDataRequest(body io.Reader) (bool, config.Datagram) {
+func (r *Receiver) validateDataRequest(body io.Reader) (bool, config.ElasticData) {
 	decoder := json.NewDecoder(body)
-	var d config.Datagram
+	var d config.ElasticData
+	var m config.ElasticMetadata
 	err := decoder.Decode(&d)
 	if err != nil {
 		log.Println(err)
 		return false, d
 	}
+
+	//TODO: check if need to register
+	var w http.ResponseWriter
+	resp, err := r.Elastic.StoreRegistration(m)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Failed to store register, ElasticSearch response code: %d", resp.StatusCode), 500)
+	}
+
 	return true, d
-}
-
-func (r *Receiver) validateRegisterRequest(body io.Reader) (bool, config.Register) {
-	decoder := json.NewDecoder(body)
-	var reg config.Register
-	err := decoder.Decode(&reg)
-	if err != nil {
-		log.Println(err)
-		return false, reg
-	}
-	return true, reg
-}
-
-func (r *Receiver) validateDeregisterRequest(body io.Reader) (bool, config.Deregister) {
-	decoder := json.NewDecoder(body)
-	var dereg config.Deregister
-	err := decoder.Decode(&dereg)
-	if err != nil {
-		log.Println(err)
-		return false, dereg
-	}
-	return true, dereg
 }

@@ -23,11 +23,11 @@ func NewReceiver(config *config.Config) (*Receiver, error) {
 
 var quit = make(chan error)
 
-func (r *Receiver) StartListener() error {
+//StartListener reads elasticSearch to load existing metadata
+//var registration map[string]config.ElasticMetadata
 
-	http.HandleFunc("/register", r.handleRegister)
+func (r *Receiver) StartListener(map[string]config.ElasticMetadata) error {
 	http.HandleFunc("/data", r.handleData)
-	http.HandleFunc("/deregister", r.handleDeregister)
 	go func() {
 		err := http.ListenAndServe(r.Config.Listen.Port, nil)
 		if err != nil {
@@ -44,12 +44,14 @@ func (r *Receiver) StartListener() error {
 	return nil
 }
 
-func (r *Receiver) ConnectElastic() error {
+func (r *Receiver) ConnectElastic() (map[string]config.ElasticMetadata, error) {
 	el, err := elastic.NewElastic(r.Config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	r.Elastic = el
-	return nil
+	var registration, _ = r.Elastic.LoadRegistration()
+
+	return registration, err
 }

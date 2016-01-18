@@ -34,12 +34,12 @@ func main() {
 		log.Fatal("[FATAL] Unable to start Receiver:", err)
 	}
 
-	err = recv.ConnectElastic()
+	metadata, err := recv.ConnectElastic()
 	if err != nil {
 		log.Fatal("[FATAL] Unable to connect to elasticsearch:", err)
 	}
 
-	err = recv.StartListener()
+	err = recv.StartListener(metadata)
 	if err != nil {
 		log.Fatal("[FATAL] Unable to start listener:", err)
 	}
