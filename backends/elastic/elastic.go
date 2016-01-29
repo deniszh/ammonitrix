@@ -62,7 +62,7 @@ func (e *Elastic) LoadRegistration() (map[string]config.ElasticMetadata, error) 
 	}
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
-	var data config.ElasticResponse
+	var data config.ElasticResponseMeta
 	err = json.Unmarshal([]byte(body), &data)
 	if err != nil {
 		log.Println("[ERROR] Could not unmarshal JSON")
