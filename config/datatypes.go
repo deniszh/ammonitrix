@@ -15,8 +15,10 @@ func (o *ElasticMetadata) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "name": o.Name = v.(string)
-			case "tags": o.Tags = v.([]string)
+		case "name":
+			o.Name = v.(string)
+		case "tags":
+			o.Tags = v.([]string)
 		}
 	}
 	return nil
@@ -35,16 +37,18 @@ func (o *ElasticData) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "name": o.Name = v.(string)
-			case "CheckData": o.CheckData = v.(map[string]interface{})
+		case "name":
+			o.Name = v.(string)
+		case "CheckData":
+			o.CheckData = v.(map[string]interface{})
 		}
 	}
 	return nil
 }
 
 type Datagram struct {
-	Data ElasticData `json:data`
-  Metadata ElasticMetadata `json:metadata`
+	Data     ElasticData     `json:data`
+	Metadata ElasticMetadata `json:metadata`
 }
 
 func (o *Datagram) UnmarshalJSON(data []byte) error {
@@ -55,8 +59,10 @@ func (o *Datagram) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "data": o.Data = v.(ElasticData)
-			case "metadata": o.Metadata = v.(ElasticMetadata)
+		case "data":
+			o.Data = v.(ElasticData)
+		case "metadata":
+			o.Metadata = v.(ElasticMetadata)
 		}
 	}
 	return nil
@@ -106,10 +112,14 @@ func (o *ElasticResponseMeta) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "took": o.Took = v.(float64)
-			case "timedout": o.TimedOut = v.(bool)
-			case "shards": o.Shards = v.(ElasticResponseShards)
-			case "hits": o.Hits = v.(ElasticResponseHits)
+		case "took":
+			o.Took = v.(float64)
+		case "timedout":
+			o.TimedOut = v.(bool)
+		case "shards":
+			o.Shards = v.(ElasticResponseShards)
+		case "hits":
+			o.Hits = v.(ElasticResponseHits)
 		}
 	}
 	return nil
@@ -129,18 +139,21 @@ func (o *ElasticResponseShards) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "failed": o.Failed = v.(float64)
-			case "successful": o.Successful = v.(float64)
-			case "total": o.Total = v.(float64)
+		case "failed":
+			o.Failed = v.(float64)
+		case "successful":
+			o.Successful = v.(float64)
+		case "total":
+			o.Total = v.(float64)
 		}
 	}
 	return nil
 }
 
 type ElasticResponseHits struct {
-	MaxScore float64                   `json:"max_score"`
-	Total    float64                   `json:"total"`
-	Hits 		 ElasticResponseHitsData	 `json:"hits"`
+	MaxScore float64                 `json:"max_score"`
+	Total    float64                 `json:"total"`
+	Hits     ElasticResponseHitsData `json:"hits"`
 }
 
 func (o *ElasticResponseHits) UnmarshalJSON(data []byte) error {
@@ -151,9 +164,12 @@ func (o *ElasticResponseHits) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "max_score": o.MaxScore = v.(float64)
-			case "total": o.Total = v.(float64)
-			case "hits": o.Hits = v.(ElasticResponseHitsData)
+		case "max_score":
+			o.MaxScore = v.(float64)
+		case "total":
+			o.Total = v.(float64)
+		case "hits":
+			o.Hits = v.(ElasticResponseHitsData)
 		}
 	}
 	return nil
@@ -175,11 +191,16 @@ func (o *ElasticResponseHitsData) UnmarshalJSON(data []byte) error {
 	m := inter.(map[string]interface{})
 	for k, v := range m {
 		switch k {
-			case "_index": o.Index = v.(string)
-			case "_type": o.Type = v.(string)
-			case "_id": o.ID = v.(string)
-			case "_score": o.Score = v.(float64)
-			case "_source": o.Source = v.(ElasticMetadata)
+		case "_index":
+			o.Index = v.(string)
+		case "_type":
+			o.Type = v.(string)
+		case "_id":
+			o.ID = v.(string)
+		case "_score":
+			o.Score = v.(float64)
+		case "_source":
+			o.Source = v.(ElasticMetadata)
 		}
 	}
 	return nil
