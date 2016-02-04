@@ -6,15 +6,9 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/eBayClassifiedsGroup/ammonitrix/backends/elastic"
 	"github.com/eBayClassifiedsGroup/ammonitrix/config"
 )
-
-type api_search struct {
-	State                 string
-	Current_state_time    string
-	Current_state_updates string
-	Quiet                 string
-}
 
 func (r *Receiver) handleData(w http.ResponseWriter, req *http.Request) {
 	log.Printf("[DEBUG] Received datagram")
@@ -42,17 +36,25 @@ func (r *Receiver) handleAPI(w http.ResponseWriter, req *http.Request) {
 	log.Printf("[DEBUG] Received API call")
 
 	if req.Method == "GET" {
-		fmt.Fprintf(w, "insert all checks here\n")
+		el, err := elastic.NewElastic(r.Config)
+		if err != nil {
+			http.Error(w, "Error initializing Elastic", 500)
+			return
+		}
+
+		r.Elastic = el
+		body, _ := r.Elastic.SearchAll()
+		fmt.Fprintf(w, "%s", body)
 		return
 	}
 
-	if req.Method != "POST" {
+	if req.Method != "POST" { // ie PUT, DELETE, etc.
 		http.Error(w, "Unsupported method", 405)
 		return
 	}
 
 	decoder := json.NewDecoder(req.Body)
-	var j api_search
+	var j config.APISearch
 	err := decoder.Decode(&j)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
