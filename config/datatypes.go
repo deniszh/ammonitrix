@@ -18,6 +18,13 @@ type Datagram struct {
 	Metadata ElasticMetadata `json:metadata`
 }
 
+type APISearch struct {
+	State                 string
+	Current_state_time    string
+	Current_state_updates string
+	Quiet                 string
+}
+
 func (o *Datagram) UnmarshalJSON(data []byte) error {
 	var inter interface{}
 	if err := json.Unmarshal(data, &inter); err != nil {
