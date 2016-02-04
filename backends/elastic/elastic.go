@@ -114,3 +114,16 @@ func (e *Elastic) SearchAll() ([]byte, error) {
 	body, _ := ioutil.ReadAll(r.Body)
 	return body, nil
 }
+
+func (e *Elastic) SearchKeyword(key string, value string) ([]byte, error) {
+	url := fmt.Sprintf("http://%s%s/%s/_search?q=%s:%s", e.Config.Elastic.Host, e.Config.Elastic.Port, e.Config.Elastic.IndexName, key, value)
+	log.Printf("[DEBUG] Searching in ES (%s)\n", url)
+	r, err := http.Get(url)
+	if err != nil || r.StatusCode >= 400 {
+		log.Println("[ERROR] Couldn't search ES")
+		return nil, err
+	}
+	defer r.Body.Close()
+	body, _ := ioutil.ReadAll(r.Body)
+	return body, nil
+}

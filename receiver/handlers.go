@@ -35,14 +35,14 @@ func (r *Receiver) handleData(w http.ResponseWriter, req *http.Request) {
 func (r *Receiver) handleAPI(w http.ResponseWriter, req *http.Request) {
 	log.Printf("[DEBUG] Received API call")
 
-	if req.Method == "GET" {
-		el, err := elastic.NewElastic(r.Config)
-		if err != nil {
-			http.Error(w, "Error initializing Elastic", 500)
-			return
-		}
+	el, err := elastic.NewElastic(r.Config)
+	if err != nil {
+		http.Error(w, "Error initializing Elastic", 500)
+		return
+	}
+	r.Elastic = el
 
-		r.Elastic = el
+	if req.Method == "GET" {
 		body, _ := r.Elastic.SearchAll()
 		fmt.Fprintf(w, "%s", body)
 		return
@@ -55,10 +55,11 @@ func (r *Receiver) handleAPI(w http.ResponseWriter, req *http.Request) {
 
 	decoder := json.NewDecoder(req.Body)
 	var j config.APISearch
-	err := decoder.Decode(&j)
+	err = decoder.Decode(&j)
 	if err != nil {
 		http.Error(w, err.Error(), 500)
 		return
 	}
-	log.Println(j)
+	body, _ := r.Elastic.SearchKeyword(j.Key, j.Value)
+	fmt.Fprintf(w, "%s", body)
 }

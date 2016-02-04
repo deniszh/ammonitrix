@@ -19,10 +19,8 @@ type Datagram struct {
 }
 
 type APISearch struct {
-	State                 string
-	Current_state_time    string
-	Current_state_updates string
-	Quiet                 string
+	Key   string
+	Value string
 }
 
 func (o *Datagram) UnmarshalJSON(data []byte) error {
