@@ -28,6 +28,8 @@ var quit = make(chan error)
 
 func (r *Receiver) StartListener(map[string]config.ElasticMetadata) error {
 	http.HandleFunc("/data", r.handleData)
+	http.HandleFunc("/v1/checks", r.handleAPI)
+
 	go func() {
 		err := http.ListenAndServe(r.Config.Listen.Port, nil)
 		if err != nil {
