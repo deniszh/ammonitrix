@@ -34,6 +34,8 @@ func (e *Elastic) StoreDatagram(ElasticData config.ElasticData) (*http.Response,
 		return nil, err
 	}
 
+	log.Println(b)
+
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 	if err != nil {
 		log.Println("[ERROR] Something went wrong with http.NewRequest")
@@ -62,7 +64,8 @@ func (e *Elastic) LoadRegistration() (map[string]config.ElasticMetadata, error) 
 	}
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
-	var data config.ElasticResponseMeta
+	log.Println(string(body))
+	var data config.Datagram
 	err = json.Unmarshal([]byte(body), &data)
 	if err != nil {
 		log.Println("[ERROR] Could not unmarshal JSON")
