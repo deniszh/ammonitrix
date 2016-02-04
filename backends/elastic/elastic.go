@@ -25,16 +25,16 @@ func NewElastic(config *config.Config) (*Elastic, error) {
 }
 
 //StoreDatagram stores data
-func (e *Elastic) StoreDatagram(ElasticData config.ElasticData) (*http.Response, error) {
+func (e *Elastic) StoreDatagram(elasticData config.ElasticData) (*http.Response, error) {
 	url := fmt.Sprintf("http://%s%s/%s/event", e.Config.Elastic.Host, e.Config.Elastic.Port, e.Config.Elastic.IndexName)
 
-	b, err := json.Marshal(ElasticData)
+	b, err := json.Marshal(elasticData)
 	if err != nil {
 		log.Println("[ERROR] Couldn't marshal datagram into JSON")
 		return nil, err
 	}
 
-	log.Println(b)
+	log.Println("[DEBUG] Marshalled elasticData:", string(b))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 	if err != nil {

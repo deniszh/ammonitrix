@@ -7,43 +7,9 @@ type ElasticMetadata struct {
 	Tags []string `json:"tags"`
 }
 
-func (o *ElasticMetadata) UnmarshalJSON(data []byte) error {
-	var inter interface{}
-	if err := json.Unmarshal(data, &inter); err != nil {
-		return err
-	}
-	m := inter.(map[string]interface{})
-	for k, v := range m {
-		switch k {
-		case "name":
-			o.Name = v.(string)
-		case "tags":
-			o.Tags = v.([]string)
-		}
-	}
-	return nil
-}
-
 type ElasticData struct {
 	Name      string      `json:"name"`
 	CheckData interface{} `json:"check_data"`
-}
-
-func (o *ElasticData) UnmarshalJSON(data []byte) error {
-	var inter interface{}
-	if err := json.Unmarshal(data, &inter); err != nil {
-		return err
-	}
-	m := inter.(map[string]interface{})
-	for k, v := range m {
-		switch k {
-		case "name":
-			o.Name = v.(string)
-		case "CheckData":
-			o.CheckData = v.(map[string]interface{})
-		}
-	}
-	return nil
 }
 
 type Datagram struct {
