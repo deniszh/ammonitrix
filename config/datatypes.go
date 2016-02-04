@@ -9,6 +9,7 @@ type ElasticMetadata struct {
 
 type ElasticData struct {
 	Name      string      `json:"name"`
+	Tags      []string    `json:"tags"`
 	CheckData interface{} `json:"check_data"`
 }
 

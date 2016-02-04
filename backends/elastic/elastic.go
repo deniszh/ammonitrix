@@ -56,7 +56,7 @@ FIXME: Function not completed
 func (e *Elastic) LoadRegistration() (map[string]config.ElasticMetadata, error) {
 	log.Println("LOADING REGISTRATION")
 	//FIXME: We want to scan for all docs, so this query is probably wrong.
-	url := fmt.Sprintf("http://%s%s/%s/_search/?size=1000", e.Config.Elastic.Host, e.Config.Elastic.Port, e.Config.Elastic.IndexName)
+	url := fmt.Sprintf("http://%s%s/%s/_search/?size=1000", e.Config.Elastic.Host, e.Config.Elastic.Port, e.Config.Elastic.MetaDataIndex)
 	r, err := http.Get(url)
 	if err != nil || r.StatusCode >= 400 {
 		log.Println("[ERROR] Couldn't load existing metadata")
@@ -64,7 +64,7 @@ func (e *Elastic) LoadRegistration() (map[string]config.ElasticMetadata, error) 
 	}
 	defer r.Body.Close()
 	body, _ := ioutil.ReadAll(r.Body)
-	log.Println(string(body))
+	log.Println("[DEBUG] Got registration query response of:", string(body))
 	var data config.Datagram
 	err = json.Unmarshal([]byte(body), &data)
 	if err != nil {
@@ -74,16 +74,18 @@ func (e *Elastic) LoadRegistration() (map[string]config.ElasticMetadata, error) 
 	return nil, nil
 }
 
-func (e *Elastic) StoreRegistration(ElasticMetadata config.ElasticMetadata) (*http.Response, error) {
+func (e *Elastic) StoreRegistration(elasticMeta config.ElasticMetadata) (*http.Response, error) {
 	url := fmt.Sprintf("http://%s%s/%s/register", e.Config.Elastic.Host, e.Config.Elastic.Port, e.Config.Elastic.MetaDataIndex)
 
 	log.Println("Storing registration")
 	//Keep only metadata
-	b, err := json.Marshal(ElasticMetadata)
+	b, err := json.Marshal(elasticMeta)
 	if err != nil {
 		log.Println("[ERROR] Couldn't marshal datagram into JSON")
 		return nil, err
 	}
+
+	log.Println("[DEBUG] Marshalled metadata:", string(b))
 
 	req, err := http.NewRequest("POST", url, bytes.NewBuffer(b))
 	if err != nil {
@@ -96,5 +98,6 @@ func (e *Elastic) StoreRegistration(ElasticMetadata config.ElasticMetadata) (*ht
 		log.Println(err)
 		return nil, err
 	}
+
 	return response, nil
 }
